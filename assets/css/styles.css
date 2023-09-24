@@ -259,7 +259,7 @@ header i {
     display: grid;
     flex-wrap: wrap;
     gap: 1.5rem;
-    min-height: 99vh;
+    min-height: 85vh;
     align-items: center;
     justify-content: center;
 }
