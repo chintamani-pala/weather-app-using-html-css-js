@@ -244,7 +244,7 @@ header i {
         width: 96vw;
     }
     body{
-        height:80vh;
+        height:96vh;
     }
 }
 
@@ -259,7 +259,7 @@ header i {
     display: grid;
     flex-wrap: wrap;
     gap: 1.5rem;
-    min-height: 85vh;
+    min-height: 99vh;
     align-items: center;
     justify-content: center;
 }
