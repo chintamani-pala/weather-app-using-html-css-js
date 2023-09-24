@@ -1,1 +1,132 @@
-const _0x27f38f=_0x288a;(function(_0x2cc2ac,_0x145c34){const _0x48255d=_0x288a,_0x151140=_0x2cc2ac();while(!![]){try{const _0x3c288a=-parseInt(_0x48255d(0x1dd))/0x1+parseInt(_0x48255d(0x1db))/0x2+-parseInt(_0x48255d(0x1df))/0x3+-parseInt(_0x48255d(0x1ce))/0x4+parseInt(_0x48255d(0x1f1))/0x5+-parseInt(_0x48255d(0x1e2))/0x6*(parseInt(_0x48255d(0x1bd))/0x7)+parseInt(_0x48255d(0x1d9))/0x8;if(_0x3c288a===_0x145c34)break;else _0x151140['push'](_0x151140['shift']());}catch(_0xcc8f17){_0x151140['push'](_0x151140['shift']());}}}(_0x5226,0x80275));function _0x288a(_0x29144e,_0x366803){const _0x5226f1=_0x5226();return _0x288a=function(_0x288a7b,_0x299368){_0x288a7b=_0x288a7b-0x1b7;let _0x28cfa7=_0x5226f1[_0x288a7b];return _0x28cfa7;},_0x288a(_0x29144e,_0x366803);}function _0x5226(){const _0x3f207e=['click','coords','965812MsNEYR','.weather-part','Enter','keyup','country','name','src','https://api.openweathermap.org/data/2.5/weather?lat=','addEventListener','documentElement','assets/icons/clear.svg','6644840NbFVaI','.dark-mode-btn','853216nGBOvR','longitude','703300JyhlgY','https://api.openweathermap.org/data/2.5/weather?q=','202479vtQovl','getCurrentPosition','classList','6oJzwZk','pending','style','value','setProperty','getElementsByTagName','innerText','&lon=','assets/icons/haze.svg','sys','floor','geolocation','&&units=metric&appid=','setItem','City\x20not\x20found','4909355XikqZF','.wrapper','weather','key','active','.temp\x20.numb','replace','getElementsByClassName','input','content','log','hsl(227.8,\x2040.3%,\x2026.3%)','remove','4913447GVpjZA','add','cod','button','Something\x20went\x20wrong','.temp\x20.numb-2','querySelector','theme','getItem','latitude','--primary-color','.location\x20span','.weather','error','assets/icons/cloud.svg'];_0x5226=function(){return _0x3f207e;};return _0x5226();}let apiKey='b190a0605344cc4f3af08d0dd473dd25',api_url,content_element=document[_0x27f38f(0x1b7)](_0x27f38f(0x1b9))[0x0],get_location_btn=content_element[_0x27f38f(0x1e7)](_0x27f38f(0x1c0))[0x0],infotxt=document[_0x27f38f(0x1b7
+let apiKey = "b190a0605344cc4f3af08d0dd473dd25"; //openwheather api key
+let api_url;
+let content_element=document.getElementsByClassName("content")[0];
+let get_location_btn= content_element.getElementsByTagName("button")[0];
+let infotxt = document.getElementsByClassName("info-txt")[0];
+let inputField = content_element.getElementsByTagName("input")[0]
+let wrapper = document.querySelector(".wrapper");
+let weatherPart = wrapper.querySelector(".weather-part");
+let weatherIcon = weatherPart.querySelector("img");
+let backArraow= document.getElementsByTagName("header")[0].querySelector("i");
+
+
+
+const darkModeBtn = document.querySelector(".dark-mode-btn");
+function changeTheme(color) {
+    document.documentElement.style.setProperty("--primary-color", color);
+    localStorage.setItem("theme", color);
+}
+//change theme to dark
+function getTheme() {
+    const theme = localStorage.getItem("theme");
+    if (theme) {
+        changeTheme(theme);
+    }
+}
+getTheme()
+let isDark = false;
+darkModeBtn.addEventListener("click", () => {
+    if(!isDark) {
+        changeTheme("#000");
+        isDark = true;
+    }else{
+        changeTheme("hsl(227.8, 40.3%, 26.3%)");
+        isDark = false;
+
+    }
+});
+backArraow.addEventListener("click",()=>{
+    wrapper.classList.remove("active");
+})
+
+//main control starts here
+
+//get cityname and process
+inputField.addEventListener("keyup", (e)=>{
+    if(e.key === "Enter"){
+        let cityname=inputField.value;
+        api_url=`https://api.openweathermap.org/data/2.5/weather?q=${cityname}&&units=metric&appid=${apiKey}`;
+        callApi()
+    }
+})
+
+get_location_btn.addEventListener("click",()=>{
+    if (navigator.geolocation) {
+        // if browser support geolocation api
+        navigator.geolocation.getCurrentPosition(onSuccessLocationApi,onErrorLocationApi);
+    } else {
+        alert("Your browser not support geolocation api");
+    }
+})
+//set api result on the web
+let wheatherSet = (result) =>{
+    if(result.cod == 404){
+        infotxt.innerText = "City not found";
+        infotxt.classList.replace("pending", "error");
+    }
+    else {
+        //getting required properties value from the whole weather information
+        const city = result.name;
+        const country = result.sys.country;
+        const { description, id } = result.weather[0];
+        let { temp, feels_like, humidity } = result.main;
+        // using custom weather icon according to the id which api gives to us
+        if (id == 800) {
+            weatherIcon.src = "assets/icons/clear.svg";
+        } else if (id >= 200 && id <= 232) {
+            weatherIcon.src = "assets/icons/storm.svg";
+        } else if (id >= 600 && id <= 622) {
+            weatherIcon.src = "assets/icons/snow.svg";
+        } else if (id >= 701 && id <= 781) {
+            weatherIcon.src = "assets/icons/haze.svg";
+        } else if (id >= 801 && id <= 804) {
+            weatherIcon.src = "assets/icons/cloud.svg";
+        } else if ((id >= 500 && id <= 531) || (id >= 300 && id <= 321)) {
+            weatherIcon.src = "assets/icons/rain.svg";
+        }
+        //setting all values to a particular element
+        //the temp is contain kelvin need to conert into celcious
+        // temp=300-temp;
+        weatherPart.querySelector(".temp .numb").innerText = Math.floor(temp);
+        weatherPart.querySelector(".weather").innerText = description;
+        weatherPart.querySelector(
+            ".location span"
+        ).innerText = `${city}, ${country}`;
+        weatherPart.querySelector(".temp .numb-2").innerText =
+            Math.floor(feels_like);
+        weatherPart.querySelector(".humidity span").innerText = `${humidity}%`;
+        infotxt.classList.remove("pending", "error");
+        infotxt.innerText = "";
+        inputField.value = "";
+        wrapper.classList.add("active");
+    }
+}
+let callApi = async() =>{
+    infotxt.innerText = "Getting Details...";
+    infotxt.classList.add("pending");
+    fetch(api_url).then((res) => res.json()).then((result)=>{
+        wheatherSet(result)
+    }).catch((res,err)=>{
+        console.log(res)
+        console.log(err)
+        infotxt.innerText = "Something went wrong";
+        infotxt.classList.replace("pending", "error");
+    })
+
+
+}
+//prepare the api after getting the location
+let onSuccessLocationApi = (position) => {
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
+    api_url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+    callApi();
+}
+
+let onErrorLocationApi =(error)=>{
+    infotxt.innerText = error.message;
+    infotxt.classList.add("error");
+}
+
+
+
