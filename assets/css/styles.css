@@ -241,8 +241,7 @@ header i {
 /* Media Queries */
 @media only screen and (max-width: 436px) {
     .wrapper {
-        max-width: 90%;
-        min-width: 90%;
+        width: 96vw;
     }
 }
 
